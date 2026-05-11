@@ -1,0 +1,110 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:tech_borrow/ui/screens/auth/pin_verification_screen.dart';
+import 'package:tech_borrow/ui/screens/utility/app_colors.dart';
+import 'package:tech_borrow/ui/screens/widgets/background_widget.dart';
+
+class EmailVerificationScreen extends StatefulWidget {
+  const EmailVerificationScreen({super.key});
+
+  @override
+  State<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
+}
+
+class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+  final TextEditingController _emailController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BackgroundWidget(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 100),
+                  Text(
+                    'Your Email Address',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'A 6 digit verification pin will send to your email address',
+                    style: TextStyle(color: Colors.black38, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 24),
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      hintText: 'Email',
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _onTapConfirmButton,
+                    child: const Icon(Icons.arrow_circle_right_outlined),
+                  ),
+                  const SizedBox(height: 36),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.4,
+                        ),
+                        text: "Have an account? ",
+                        children: [
+                          TextSpan(
+                            text: 'Sign in',
+                            style: const TextStyle(
+                              color: Appcolors.themeColor,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = _onTapSignInButton,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onTapSignInButton() {
+    Navigator.pop(context);
+  }
+
+  void _onTapConfirmButton() {
+    if (_emailController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter an email address')),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PinVerificationScreen(
+          email: _emailController.text.trim(),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+}
